@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/markusthoemmes/goautoneg"
+	"github.com/sanity-io/litter"
 )
 
 // Response is used for a HTTP response
@@ -13,6 +14,16 @@ type Response struct {
 	XMLName    xml.Name `xml:"response"`
 	Body       interface{}
 	StatusCode int
+}
+
+// BodyAsString returns the body as a string
+func (resp Response) BodyAsString() string {
+	return litter.Sdump(resp.Body)
+}
+
+// BodyAsBytes returns the body as a byte slice
+func (resp Response) BodyAsBytes() []byte {
+	return []byte(resp.BodyAsString())
 }
 
 // ErrorResponse is used for a HTTP error response
@@ -29,11 +40,32 @@ func (resp Response) Write(w http.ResponseWriter, r *http.Request) error {
 		switch accept.SubType {
 		case "xml":
 			return resp.ToXML(w)
+		case "html":
+			return resp.ToHTML(w)
+		case "text":
+			return resp.ToText(w)
 		}
 	}
 
 	return resp.ToJSON(w)
 
+}
+
+// ToText returns the response as plain text
+func (resp Response) ToText(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(resp.StatusCode)
+	w.Write(resp.BodyAsBytes())
+	return nil
+}
+
+// ToHTML returns the response as HTML
+func (resp Response) ToHTML(w http.ResponseWriter) error {
+	body := "<pre>" + resp.BodyAsString() + "</pre>"
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(resp.StatusCode)
+	w.Write([]byte(body))
+	return nil
 }
 
 // ToJSON returns the response as JSON
