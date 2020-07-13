@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -29,20 +30,16 @@ func Logger(next http.Handler) http.Handler {
 		ri.duration = m.Duration
 
 		log.Info(
+			fmt.Sprintf("%16v", ri.duration),
+			"|",
 			ri.ipaddr,
-			// "-",
-			// "-",
-			// ri.ts.Format("[02/Jan/2006:15:04:05 -0700]"),
 			"\""+ri.method,
 			ri.uri,
 			ri.proto+"\"",
 			ri.code,
 			ri.size,
-			// "\""+ri.referer+"\"",
 			"\""+ri.userAgent+"\"",
 		)
-
-		// next.ServeHTTP(w, r)
 
 	}
 
