@@ -1,4 +1,4 @@
-REVISION := 1.5
+REVISION := 1.7
 
 build:
 	@go build -o example-environ-server github.com/twixlmedia/example-environ-server

@@ -20,6 +20,7 @@ func main() {
 
 	r.HandleFunc("/", handlers.RootHandler).Methods(http.MethodGet)
 	r.HandleFunc("/error", handlers.ErrorHandler).Methods(http.MethodGet)
+	r.HandleFunc("/echo", handlers.EchoHandler)
 
 	log.Info("Starting HTTP server on :8080")
 	err := http.ListenAndServe(":8080", r)
