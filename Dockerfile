@@ -1,5 +1,5 @@
 # Step 1 - Create layer with the downloaded modules
-FROM golang:1.15.2-alpine AS mod-download
+FROM golang:1.15.4-alpine AS mod-download
 
 RUN mkdir -p /app
 
